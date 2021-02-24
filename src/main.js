@@ -3,7 +3,7 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 
-//! 推荐使用下载的本地字体图标
+//! 推荐使用下载的本地字体图标防止线上链接出错
 import './styles/font/iconfont.css'
 // 加载全局样式
 import './styles/index.less'
