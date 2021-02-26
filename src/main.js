@@ -5,12 +5,13 @@ import store from './store'
 
 //! 推荐使用下载的本地字体图标防止线上链接出错
 import './styles/font/iconfont.css'
-// 加载全局样式
-import './styles/index.less'
 
 // 引入 vant
 import Vant from 'vant'
 import 'vant/lib/index.css'
+
+// 加载全局样式
+import './styles/index.less'
 
 import 'amfe-flexible'
 // 加载 vant
