@@ -27,7 +27,7 @@
         <template #icon>
           <i class="toutiao toutiao-wode"> </i>
         </template>
-        <span>我的</span>
+        <span>{{ this.$store.state.user ? '我的' : '未登录' }}</span>
       </van-tabbar-item>
     </van-tabbar>
   </div>

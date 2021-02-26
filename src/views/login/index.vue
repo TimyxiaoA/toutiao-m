@@ -109,8 +109,11 @@ export default {
         this.$toast.success('登陆成功')
         // 4.处理登录完成后操作 储存 token到 vuex 中
         this.$store.commit('setUser', res.data)
+        // 登陆成功 跳转页面
+        this.$router.push(this.$route.params.redirect || '/')
       } catch (err) {
-        if (err.response.status === 400) {
+        console.log(err, 23)
+        if (err.response && err.response.status === 400) {
           this.$toast.fail('手机号或验证码错误')
         } else {
           this.$toast.fail('登陆失败')
@@ -135,7 +138,7 @@ export default {
         this.$toast('发送成功')
       } catch (err) {
         // 发送失败,关闭倒计时
-        if (err.response.status === 429) {
+        if (err.response && err.response.status === 429) {
           this.$toast('发送太频繁了,请稍后再试')
         } else {
           this.$toast('发送失败,请稍后再试')
