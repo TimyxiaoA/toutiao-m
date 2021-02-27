@@ -6,7 +6,7 @@
         <!-- 添加 v-if 判断是否从 /my 路由跳转过来 控制是否显示 'x'图标 -->
         <van-icon
           v-if="$route.params.redirect"
-          name="cross"
+          name="arrow-left"
           @click="$router.back()"
         />
       </template>

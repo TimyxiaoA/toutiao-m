@@ -8,7 +8,7 @@
           <span class="name">{{ userInfo.name }}</span>
         </div>
         <div class="right">
-          <van-button class="user-edit" round size="small">编辑资料</van-button>
+          <van-button class="user-edit" round>编辑资料</van-button>
         </div>
       </div>
       <div class="user-stats">
@@ -62,6 +62,7 @@
         <span slot="text" class="text">历史</span>
       </van-grid-item>
     </van-grid>
+
     <!-- Cell 单元格 -->
     <van-cell title="消息通知" is-link />
     <van-cell class="mb-9" title="小智同学" is-link />
@@ -167,6 +168,14 @@ export default {
         }
       }
       .right {
+        .user-edit {
+          width: 115px;
+          height: 32px;
+          font-size: 20px;
+          color: #666;
+          padding: 0;
+          letter-spacing: 1px;
+        }
       }
     }
     .user-stats {
