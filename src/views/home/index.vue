@@ -36,37 +36,92 @@
 
       <!-- 汉堡图标 -->
       <div slot="nav-right" class="placeholder"></div>
-      <div slot="nav-right" class="hamburger-btn">
+      <div
+        slot="nav-right"
+        class="hamburger-btn"
+        @click="isEditChannelShow = true"
+      >
         <i class="toutiao toutiao-gengduo"></i>
       </div>
     </van-tabs>
+
+    <!-- 频道编辑 -->
+    <van-popup
+      class="edit-channel-popup"
+      v-model="isEditChannelShow"
+      position="bottom"
+      :style="{ height: '100%' }"
+      closeable
+      close-icon-position="top-left"
+    >
+      <channel-edit
+        :my-channels="channels"
+        :active="active"
+        @change-active="changeActive"
+      ></channel-edit>
+    </van-popup>
+    <!-- 频道编辑 -->
   </div>
 </template>
 
 <script>
 import { getUserChannels } from '@/api/user.js'
 import ArticleList from './components/article-list.vue'
+import ChannelEdit from './components/channel-edit.vue'
+import { mapState } from 'vuex'
+import { getItem, setItem } from '@/utils/storage.js'
+
 export default {
   name: 'homeIndex',
-  components: { ArticleList },
+  components: { ArticleList, ChannelEdit },
   data() {
     return {
       active: 0,
       // 频道列表
-      channels: []
+      channels: [],
+      isEditChannelShow: false
     }
+  },
+  computed: {
+    ...mapState(['user'])
   },
   created() {
     this.loadChannels()
   },
   methods: {
+    // 加载用户频道
     async loadChannels() {
       try {
-        const { data: res } = await getUserChannels()
-        console.log(res)
-        this.channels = res.data.channels
+        if (!this.user) {
+          const r = getItem('unLoginChannel')
+
+          if (r) {
+            console.log(r, 444)
+            this.channels = r
+          } else {
+            const { data: res } = await getUserChannels()
+            console.log(res, 11111)
+            this.channels = res.data.channels
+            setItem('unLoginChannel', this.channels)
+          }
+        } else {
+          const { data: res } = await getUserChannels()
+          console.log(res, 2222)
+          this.channels = res.data.channels
+        }
       } catch (err) {
         this.$toast('频道获取失败,请稍后再试!')
+      }
+    },
+    // 改变 active
+    changeActive(obj) {
+      if (obj.index >= 0) {
+        this.active = obj.index
+        this.isEditChannelShow = obj.flag
+      } else if (obj.id) {
+        // this.loadChannels()
+        this.isEditChannelShow = obj.flag
+        console.log(22222)
       }
     }
   }

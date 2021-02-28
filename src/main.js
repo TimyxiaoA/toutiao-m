@@ -14,6 +14,9 @@ import 'vant/lib/index.css'
 import './styles/index.less'
 
 import 'amfe-flexible'
+
+import './utils/dayjs.js'
+
 // 加载 vant
 Vue.use(Vant)
 

@@ -4,7 +4,7 @@
     <div slot="title" class="title  van-multi-ellipsis--l2">
       {{ article.title }}
     </div>
-    <!-- 下方提示内容 -->
+    <!-- 下方有三张图片的情况 -->
     <div slot="label">
       <div v-if="article.cover.type === 3" class="cover-wrap">
         <div
@@ -15,6 +15,8 @@
           <van-image class="cover-item-img" :src="img" fit="cover" />
         </div>
       </div>
+
+      <!-- 下方提示内容 -->
       <div
         :class="[
           'label-info',
@@ -23,10 +25,10 @@
       >
         <span>{{ article.aut_name }}</span>
         <span>{{ article.comm_count }}评论</span>
-        <span>{{ article.pubdate }}</span>
+        <span>{{ article.pubdate | relativeTime }}</span>
       </div>
     </div>
-    <!-- 右侧图片内容 -->
+    <!--右侧只有一张图片的情况 右侧图片内容 -->
     <van-image
       class="right-cover"
       v-if="article.cover.type === 1"

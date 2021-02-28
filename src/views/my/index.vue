@@ -94,6 +94,7 @@ export default {
     this.getUser()
   },
   methods: {
+    // 退出登录
     onLogout() {
       this.$dialog
         .confirm({
