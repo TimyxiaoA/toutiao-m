@@ -27,7 +27,11 @@
     <!-- /搜索联想建议 -->
 
     <!-- 搜索历史记录 -->
-    <search-history v-else />
+    <search-history
+      v-else
+      :search-histories="searchHistories"
+      @search="onSearch"
+    />
     <!-- /搜索历史记录 -->
   </div>
 </template>
@@ -36,6 +40,7 @@
 import SearchHistory from './components/search-history'
 import SearchSuggestion from './components/search-suggestion'
 import SearchResult from './components/search-result'
+import { getItem, setItem } from '@/utils/storage.js'
 export default {
   name: 'searchIndex',
   components: {
@@ -46,13 +51,23 @@ export default {
   data() {
     return {
       searchText: '',
-      isResultShow: false
+      isResultShow: false,
+      searchHistories: getItem('toutiao-searchHistories') || [] // 搜索历史记录
     }
   },
-
+  watch: {
+    searchHistories(value) {
+      setItem('toutiao-searchHistories', value)
+    }
+  },
   methods: {
     onSearch(val) {
       console.log(val)
+      const r = this.searchHistories.indexOf(val)
+      if (r !== -1) {
+        this.searchHistories.splice(r, 1)
+      }
+      this.searchHistories.unshift(val)
       this.isResultShow = true // 展示搜索页面
       this.searchText = val
     },
