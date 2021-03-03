@@ -24,6 +24,6 @@ export const addChannelById = channels => {
   return request({
     method: 'PATCH',
     url: '/app/v1_0/user/channels',
-    data: { channels: channels }
+    data: { channels: [channels] }
   })
 }

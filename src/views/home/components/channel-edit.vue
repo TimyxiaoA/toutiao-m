@@ -124,47 +124,59 @@ export default {
     },
     // 点击添加频道
     async onAddChannel(channel) {
-      this.myChannels.push(channel)
-      try {
-        if (this.user) {
-          const { data: res } = await addChannelById([
-            {
-              id: channel.id,
-              seq: this.myChannels.length
-            }
-          ])
+      // 数据持久化
+      // 已登录后端添加
+      if (this.user) {
+        try {
+          const { data: res } = await addChannelById({
+            id: channel.id,
+            seq: this.myChannels.length
+          })
           console.log(res)
-        } else {
-          // 未登录,将频道存放到本地中
-          setItem('unLoginChannel', this.myChannels)
+          // 前端添加
+          // 判断后端返回结果
+          if (res.data.channels.length) {
+            this.myChannels.push(channel)
+          }
+        } catch (err) {
+          console.log(err)
+          this.$toast('添加频道失败')
         }
-      } catch (err) {
-        console.log(err)
-        this.$toast('添加频道失败')
+      } else {
+        // 未登录,将最新频道存放到本地中
+        // 前端添加
+        this.myChannels.push(channel)
+        setItem('unLoginChannel', this.myChannels)
       }
     },
     // 点击频道 显示高亮 或者 删除频道
     async toOrRemove(index, id) {
       if (!this.isEdit) {
+        // 非编辑状态
         this.$emit('change-active', { index: index, flag: false })
       } else {
-        if (id === 0) return false
+        // 编辑状态
+        if (this.defaultChannel.includes(id)) return false // 默认频道不删除
         if (index <= this.active) {
           this.$emit('change-active', { index: this.active - 1, flag: true })
         }
-        // 前端删除
-        this.myChannels.splice(index, 1)
+
         // 判断是否登录
         if (this.user) {
           // 后端删除
           try {
             const res = await removeChannelById(id)
             console.log(res)
-            this.$emit('change-active', { id: id, flag: true })
+            if (res.status === 204) {
+              // 前端删除
+              this.myChannels.splice(index, 1)
+            }
           } catch (err) {
             this.$toast('删除失败')
           }
         } else {
+          // 前端删除
+          this.myChannels.splice(index, 1)
           // 未登录,将频道存放到本地中
           setItem('unLoginChannel', this.myChannels)
         }

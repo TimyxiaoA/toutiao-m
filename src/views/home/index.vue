@@ -9,6 +9,12 @@
         size="small"
         round
         icon="search"
+        :to="{
+          name: 'search',
+          params: {
+            redirect: '/'
+          }
+        }"
         >搜索</van-button
       >
     </van-nav-bar>
@@ -93,11 +99,11 @@ export default {
     async loadChannels() {
       try {
         if (!this.user) {
-          const r = getItem('unLoginChannel')
+          const localChannels = getItem('unLoginChannel')
 
-          if (r) {
-            console.log(r, 444)
-            this.channels = r
+          if (localChannels) {
+            console.log(localChannels, 444)
+            this.channels = localChannels
           } else {
             const { data: res } = await getUserChannels()
             console.log(res, 11111)
@@ -115,14 +121,8 @@ export default {
     },
     // 改变 active
     changeActive(obj) {
-      if (obj.index >= 0) {
-        this.active = obj.index
-        this.isEditChannelShow = obj.flag
-      } else if (obj.id) {
-        // this.loadChannels()
-        this.isEditChannelShow = obj.flag
-        console.log(22222)
-      }
+      this.active = obj.index
+      this.isEditChannelShow = obj.flag
     }
   }
 }
