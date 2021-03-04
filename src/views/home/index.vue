@@ -92,8 +92,7 @@ export default {
   computed: {
     ...mapState(['user'])
   },
-  created() {},
-  mounted() {
+  created() {
     this.loadChannels()
   },
   methods: {
