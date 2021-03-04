@@ -61,15 +61,19 @@ export default {
     }
   },
   methods: {
+    //! 此页面的核心逻辑(有三个地方触发此函数)
     onSearch(val) {
       console.log(val)
+      // 1.将输入框重新赋值
+      this.searchText = val
+      // 2.储存历史记录,将最新的没有重复的内容放在数组的最前面
       const r = this.searchHistories.indexOf(val)
       if (r !== -1) {
         this.searchHistories.splice(r, 1)
       }
       this.searchHistories.unshift(val)
-      this.isResultShow = true // 展示搜索页面
-      this.searchText = val
+      // 3.展示搜索页面
+      this.isResultShow = true
     },
     onCancel() {
       console.log('onCancle')

@@ -32,6 +32,7 @@
       title-active-color="#333"
     >
       <van-tab
+        ref="channels"
         v-for="channel in channels"
         :key="channel.id"
         :title="channel.name"
@@ -51,7 +52,7 @@
       </div>
     </van-tabs>
 
-    <!-- 频道编辑 -->
+    <!-- 频道编辑弹出层 -->
     <van-popup
       class="edit-channel-popup"
       v-model="isEditChannelShow"
@@ -91,7 +92,8 @@ export default {
   computed: {
     ...mapState(['user'])
   },
-  created() {
+  created() {},
+  mounted() {
     this.loadChannels()
   },
   methods: {
