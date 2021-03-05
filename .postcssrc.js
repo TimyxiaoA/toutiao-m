@@ -10,7 +10,9 @@ module.exports = {
         // file => 要编译的样式的路径
         return file.includes('vant') ? 37.5 : 75
       },
-      propList: ['*']
+      propList: ['*'],
+      // exclude (String, Regexp, Function) The file path to ignore and leave as px
+      exclude: 'github-markdown.css'
     }
   }
 }
