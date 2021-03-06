@@ -1,7 +1,12 @@
 <template>
   <div class="article-container">
     <!-- 导航栏 -->
-    <van-nav-bar class="page-nav-bar" left-arrow title="黑马头条"></van-nav-bar>
+    <van-nav-bar
+      class="page-nav-bar"
+      left-arrow
+      title="黑马头条"
+      @click-left="$router.back()"
+    ></van-nav-bar>
     <!-- /导航栏 -->
 
     <div class="main-wrap">
@@ -80,15 +85,24 @@
 
         <!-- 评论列表 -->
         <comment-list
+          :list="commentList"
           :source="article.art_id"
           @onload-success="totalCommentCount = $event.total_count"
+          @reply-click="onReplyClick"
         ></comment-list>
 
         <!-- 底部区域 -->
         <div class="article-bottom">
-          <van-button class="comment-btn" type="default" round size="small"
+          <!-- 发布评论按钮 -->
+          <van-button
+            class="comment-btn"
+            type="default"
+            round
+            size="small"
+            @click="isPostShow = true"
             >写评论</van-button
           >
+
           <van-icon color="#777" name="comment-o" :badge="totalCommentCount" />
           <!-- 收藏图标组件 -->
           <collect-article
@@ -107,6 +121,15 @@
           <van-icon color="#777" name="share"></van-icon>
         </div>
         <!-- /底部区域 -->
+
+        <!-- 发布评论弹出层 -->
+        <van-popup v-model="isPostShow" position="bottom">
+          <!-- 发布评论组件 -->
+          <comment-post
+            :target="article.art_id"
+            @post-success="onPostSuccess"
+          ></comment-post>
+        </van-popup>
       </div>
       <!-- /加载完成-文章详情 -->
 
@@ -125,6 +148,17 @@
       </div>
       <!-- /加载失败：其它未知错误（例如网络原因或服务端异常） -->
     </div>
+    <!-- 评论回复 -->
+    <!--//! 弹出层是懒渲染的：只有在第一次展示的时候才会渲染里面的内容，之后它的关闭和显示都是在切换内容的显示和隐藏  这里需要更新组件 -->
+    <!-- v-if="isReplyShow"  或者 :key="isReplyShow"-->
+    <van-popup v-model="isReplyShow" position="bottom" style="height: 100%;">
+      <comment-reply
+        :key="isReplyShow"
+        :comment="currentComment"
+        @close="isReplyShow = false"
+      />
+    </van-popup>
+    <!-- /评论回复 -->
   </div>
 </template>
 
@@ -136,13 +170,22 @@ import FollowUser from '@/components/follow-user'
 import CollectArticle from '@/components/collect-article'
 import LikeArticle from '@/components/like-article'
 import CommentList from './components/comment-list'
+import CommentPost from './components/comment-post'
+import CommentReply from './components/comment-reply'
 export default {
   name: 'ArticleIndex',
   components: {
     FollowUser,
     CollectArticle,
     LikeArticle,
-    CommentList
+    CommentList,
+    CommentPost,
+    CommentReply
+  },
+  provide: function() {
+    return {
+      articleId: this.articleId
+    }
   },
   props: {
     articleId: {
@@ -156,7 +199,11 @@ export default {
       loading: false, // 控制 loading 状态
       errStatus: 0, // 错误状态码
       isLoadingFollow: false, // 控制按钮的loading状态-----防抖优化
-      totalCommentCount: 0 // 总评论数
+      totalCommentCount: 0, // 总评论数
+      isPostShow: false,
+      commentList: [], // 添加的评论列表
+      isReplyShow: false,
+      currentComment: {} // 当前点击回复的评论项
     }
   },
   created() {
@@ -203,7 +250,7 @@ export default {
           })
         }
       })
-    }
+    },
     /*  async onFollow() {
       //! 防抖优化 按钮loading状态下 点击事件不能触发(vant 内部处理)
       this.isLoadingFollow = true
@@ -222,6 +269,17 @@ export default {
       }
       this.isLoadingFollow = false
     } */
+    onPostSuccess(res) {
+      // 将发布内容展示到页面顶部
+      this.commentList.unshift(res.new_obj)
+      // 关闭弹层
+      this.isPostShow = false
+    },
+    onReplyClick(comment) {
+      console.log(comment)
+      this.currentComment = comment
+      this.isReplyShow = true
+    }
   }
 }
 </script>

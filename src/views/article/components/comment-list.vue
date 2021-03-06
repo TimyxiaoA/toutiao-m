@@ -3,6 +3,7 @@
     v-model="loading"
     :finished="finished"
     finished-text="没有更多了"
+    :immediate-check="false"
     @load="onLoad"
   >
     <!-- 评论项组件 -->
@@ -10,6 +11,7 @@
       v-for="(comment, index) in list"
       :key="index"
       :comment="comment"
+      @reply-click="$emit('reply-click', $event)"
     ></comment-item>
   </van-list>
 </template>
@@ -26,18 +28,31 @@ export default {
     source: {
       type: [Number, String, Object],
       required: true
+    },
+    list: {
+      type: Array,
+      default: () => []
+    },
+    type: {
+      type: String,
+      validator: value => {
+        return ['a', 'c'].includes(value)
+      },
+      default: 'a'
     }
   },
   data() {
     return {
-      list: [],
+      // list: [],
       loading: false,
       finished: false,
       offset: null,
       limit: 10
     }
   },
-  created() {
+  created() {},
+  mounted() {
+    this.loading = true
     this.onLoad()
   },
   methods: {
@@ -45,8 +60,8 @@ export default {
       try {
         // 1
         const { data: res } = await getComments({
-          type: 'a',
-          source: this.source,
+          type: this.type,
+          source: this.source.toString(),
           offset: this.offset,
           limit: this.limit
         })
