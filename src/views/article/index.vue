@@ -78,12 +78,18 @@
         ></div>
         <van-divider>正文结束</van-divider>
 
+        <!-- 评论列表 -->
+        <comment-list
+          :source="article.art_id"
+          @onload-success="totalCommentCount = $event.total_count"
+        ></comment-list>
+
         <!-- 底部区域 -->
         <div class="article-bottom">
           <van-button class="comment-btn" type="default" round size="small"
             >写评论</van-button
           >
-          <van-icon color="#777" name="comment-o" badge="123" />
+          <van-icon color="#777" name="comment-o" :badge="totalCommentCount" />
           <!-- 收藏图标组件 -->
           <collect-article
             class="btn-item"
@@ -129,12 +135,14 @@ import { ImagePreview } from 'vant'
 import FollowUser from '@/components/follow-user'
 import CollectArticle from '@/components/collect-article'
 import LikeArticle from '@/components/like-article'
+import CommentList from './components/comment-list'
 export default {
   name: 'ArticleIndex',
   components: {
     FollowUser,
     CollectArticle,
-    LikeArticle
+    LikeArticle,
+    CommentList
   },
   props: {
     articleId: {
@@ -147,7 +155,8 @@ export default {
       article: {}, // 文章详情
       loading: false, // 控制 loading 状态
       errStatus: 0, // 错误状态码
-      isLoadingFollow: false // 控制按钮的loading状态-----防抖优化
+      isLoadingFollow: false, // 控制按钮的loading状态-----防抖优化
+      totalCommentCount: 0 // 总评论数
     }
   },
   created() {
